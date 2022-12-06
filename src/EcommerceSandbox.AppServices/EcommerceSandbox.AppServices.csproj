@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EcommerceSandbox.DomainEntities\EcommerceSandbox.DomainEntities.csproj" />
+      <ProjectReference Include="..\EcommerceSandbox.DomainServices\EcommerceSandbox.DomainServices.csproj" />
+      <ProjectReference Include="..\EcommerceSandbox.Common\EcommerceSandbox.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="11.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+      <PackageReference Include="NLog" Version="5.0.2" />
+    </ItemGroup>
+
+</Project>

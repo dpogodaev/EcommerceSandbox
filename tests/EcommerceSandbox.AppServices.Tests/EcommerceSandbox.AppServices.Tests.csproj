@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\EcommerceSandbox.App.Services\EcommerceSandbox.App.Services.csproj" />
+      <ProjectReference Include="..\..\src\EcommerceSandbox.AppServices\EcommerceSandbox.AppServices.csproj" />
     </ItemGroup>
 
 </Project>

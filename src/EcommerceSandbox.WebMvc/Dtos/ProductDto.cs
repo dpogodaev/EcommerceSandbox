@@ -1,5 +1,8 @@
 ﻿namespace EcommerceSandbox.WebMvc.Dtos;
 
+/// <summary>
+/// DTO for product entity.
+/// </summary>
 public class ProductDto
 {
     public long Id { get; set; }

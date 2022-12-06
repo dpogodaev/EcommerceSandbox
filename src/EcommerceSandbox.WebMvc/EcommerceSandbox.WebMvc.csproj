@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +15,8 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Product\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="_site\manifest.json" />
+    <_ContentIncludedByDefault Remove="_site\search-stopwords.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,15 +27,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="5.0.1" />
+    <PackageReference Include="NLog" Version="5.0.2" />
+    <PackageReference Include="NLog.Schema" Version="5.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EcommerceSandbox.App.Services\EcommerceSandbox.App.Services.csproj" />
-    <ProjectReference Include="..\EcommerceSandbox.App.Storage\EcommerceSandbox.App.Storage.csproj" />
-    <ProjectReference Include="..\EcommerceSandbox.DAL.EF.Mssql\EcommerceSandbox.DAL.EF.Mssql.csproj" />
-    <ProjectReference Include="..\EcommerceSandbox.DAL.EF\EcommerceSandbox.DAL.EF.csproj" />
+    <ProjectReference Include="..\EcommerceSandbox.AppServices\EcommerceSandbox.AppServices.csproj" />
+    <ProjectReference Include="..\EcommerceSandbox.AppStorages\EcommerceSandbox.AppStorages.csproj" />
+    <ProjectReference Include="..\EcommerceSandbox.EfCoreMssql\EcommerceSandbox.EfCoreMssql.csproj" />
+    <ProjectReference Include="..\EcommerceSandbox.EfCore\EcommerceSandbox.EfCore.csproj" />
   </ItemGroup>
 
 </Project>

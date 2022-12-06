@@ -1,34 +1,35 @@
-using NLog;
-using NLog.Web;
-
+using System;
 using EcommerceSandbox.WebMvc;
+using EcommerceSandbox.WebMvc.Providers;
+using Microsoft.AspNetCore.Builder;
 
-var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+LoggerProvider.Configure();
+var startupLogger = StartupLoggerProvider.GetLogger();
 
 try
 {
-    logger.Debug("Init main");
+    startupLogger.Debug("Program: application configure started");
 
     var builder = WebApplication.CreateBuilder(args);
+    builder.UseLoggerProvider();
+    builder.ConfigureServices(startupLogger);
 
-    var startup = new Startup(builder.Configuration);
-
-    startup.ConfigureServices(builder.Services);
-
-    //builder.AddNLogConfig();
+    startupLogger.Debug("Program: application build started");
 
     var app = builder.Build();
+    app.ConfigureHttpRequestPipeline();
+    app.ApplyAutoMigration();
 
-    startup.Configure(app, app.Environment);
+    startupLogger.Debug("Program: application has been successfully launched");
 
     app.Run();
 }
 catch (Exception e)
 {
-    logger.Error(e, "Stopped program because of exception");
+    startupLogger.Error(e, "Program: failed to launch the application");
     throw;
 }
 finally
 {
-    LogManager.Shutdown();
+    startupLogger.Dispose();
 }

@@ -1,23 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.App.Domain", "src\EcommerceSandbox.App.Domain\EcommerceSandbox.App.Domain.csproj", "{9E94BE0B-8149-49E4-8060-A1DB4AA4282B}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.DomainEntities", "src\EcommerceSandbox.DomainEntities\EcommerceSandbox.DomainEntities.csproj", "{9E94BE0B-8149-49E4-8060-A1DB4AA4282B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.WebMvc", "src\EcommerceSandbox.WebMvc\EcommerceSandbox.WebMvc.csproj", "{F1B7C7F3-2AEC-4809-8CA9-A63FE91A1972}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.WebMvc", "src\EcommerceSandbox.WebMvc\EcommerceSandbox.WebMvc.csproj", "{F1B7C7F3-2AEC-4809-8CA9-A63FE91A1972}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.App.Core", "src\EcommerceSandbox.App.Core\EcommerceSandbox.App.Core.csproj", "{44C68DE4-A579-4FA8-B0F0-9E9778CDD349}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.DomainServices", "src\EcommerceSandbox.DomainServices\EcommerceSandbox.DomainServices.csproj", "{44C68DE4-A579-4FA8-B0F0-9E9778CDD349}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.DAL.EF", "src\EcommerceSandbox.DAL.EF\EcommerceSandbox.DAL.EF.csproj", "{D7B05E7A-8667-4EBF-9D35-77BE6FEFBB07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.EfCore", "src\EcommerceSandbox.EfCore\EcommerceSandbox.EfCore.csproj", "{D7B05E7A-8667-4EBF-9D35-77BE6FEFBB07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.DAL.EF.Mssql", "src\EcommerceSandbox.DAL.EF.Mssql\EcommerceSandbox.DAL.EF.Mssql.csproj", "{6717CB23-6B10-435B-9DD7-2FA32E04187A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.EfCoreMssql", "src\EcommerceSandbox.EfCoreMssql\EcommerceSandbox.EfCoreMssql.csproj", "{6717CB23-6B10-435B-9DD7-2FA32E04187A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.App.Services", "src\EcommerceSandbox.App.Services\EcommerceSandbox.App.Services.csproj", "{86EEEB8B-362E-4419-BA0E-D9400423FEDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.AppServices", "src\EcommerceSandbox.AppServices\EcommerceSandbox.AppServices.csproj", "{86EEEB8B-362E-4419-BA0E-D9400423FEDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.App.Storage", "src\EcommerceSandbox.App.Storage\EcommerceSandbox.App.Storage.csproj", "{D1233873-1F63-4757-ABFF-EEC55A218DFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.AppStorages", "src\EcommerceSandbox.AppStorages\EcommerceSandbox.AppStorages.csproj", "{D1233873-1F63-4757-ABFF-EEC55A218DFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8D3C5B07-C5C2-4386-8365-BA81BF68EDA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceSandbox.AppServices.Tests", "tests\EcommerceSandbox.AppServices.Tests\EcommerceSandbox.AppServices.Tests.csproj", "{485C3190-C6E4-496A-A029-DD9616E4080D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.AppServices.Tests", "tests\EcommerceSandbox.AppServices.Tests\EcommerceSandbox.AppServices.Tests.csproj", "{485C3190-C6E4-496A-A029-DD9616E4080D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceSandbox.Common", "src\EcommerceSandbox.Common\EcommerceSandbox.Common.csproj", "{1FD8EBDA-9622-488C-9441-36D52EE62DFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{66B19BDD-4939-4C83-8266-1281AC210515}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{60FB7934-5FD8-47E6-897B-B3103EE291F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{48008383-6976-48EB-8A54-086D2572ED87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{A82FF2A4-3CAE-4A89-9B77-38E3F3E96A98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,8 +69,26 @@ Global
 		{485C3190-C6E4-496A-A029-DD9616E4080D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{485C3190-C6E4-496A-A029-DD9616E4080D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{485C3190-C6E4-496A-A029-DD9616E4080D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FD8EBDA-9622-488C-9441-36D52EE62DFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FD8EBDA-9622-488C-9441-36D52EE62DFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FD8EBDA-9622-488C-9441-36D52EE62DFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FD8EBDA-9622-488C-9441-36D52EE62DFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{9E94BE0B-8149-49E4-8060-A1DB4AA4282B} = {60FB7934-5FD8-47E6-897B-B3103EE291F6}
+		{F1B7C7F3-2AEC-4809-8CA9-A63FE91A1972} = {66B19BDD-4939-4C83-8266-1281AC210515}
+		{44C68DE4-A579-4FA8-B0F0-9E9778CDD349} = {60FB7934-5FD8-47E6-897B-B3103EE291F6}
+		{D7B05E7A-8667-4EBF-9D35-77BE6FEFBB07} = {48008383-6976-48EB-8A54-086D2572ED87}
+		{6717CB23-6B10-435B-9DD7-2FA32E04187A} = {48008383-6976-48EB-8A54-086D2572ED87}
+		{86EEEB8B-362E-4419-BA0E-D9400423FEDF} = {60FB7934-5FD8-47E6-897B-B3103EE291F6}
+		{D1233873-1F63-4757-ABFF-EEC55A218DFC} = {60FB7934-5FD8-47E6-897B-B3103EE291F6}
 		{485C3190-C6E4-496A-A029-DD9616E4080D} = {8D3C5B07-C5C2-4386-8365-BA81BF68EDA9}
+		{1FD8EBDA-9622-488C-9441-36D52EE62DFB} = {A82FF2A4-3CAE-4A89-9B77-38E3F3E96A98}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C4617CD-9B4E-4B09-88C5-B98F9A693D13}
 	EndGlobalSection
 EndGlobal

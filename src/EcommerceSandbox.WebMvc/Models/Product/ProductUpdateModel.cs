@@ -1,5 +1,8 @@
 ﻿namespace EcommerceSandbox.WebMvc.Models.Product;
 
+/// <summary>
+/// Model for updating the product.
+/// </summary>
 public class ProductUpdateModel
 {
     public long Id { get; set; }

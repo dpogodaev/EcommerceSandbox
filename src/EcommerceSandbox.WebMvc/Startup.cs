@@ -1,46 +1,42 @@
-﻿using EcommerceSandbox.WebMvc.Components;
+﻿using EcommerceSandbox.WebMvc.Configs.Common;
+using EcommerceSandbox.WebMvc.Configs.Components;
+using EcommerceSandbox.WebMvc.Interfaces;
+using Microsoft.AspNetCore.Builder;
 
 namespace EcommerceSandbox.WebMvc;
 
 /// <summary>
-/// Application configurator.
+/// Application launch configurator.
 /// </summary>
-public class Startup
+public static class Startup
 {
-    private readonly IConfigurationRoot _configuration;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Startup"/> class with configuration provided.
-    /// </summary>
-    /// <param name="configuration">The <see cref="IConfigurationRoot"/>.</param>
-    public Startup(IConfigurationRoot configuration)
-    {
-        _configuration = configuration;
-    }
-    
     /// <summary>
     /// Configures application services.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
-    public void ConfigureServices(IServiceCollection services)
+    /// <param name="builder">A builder for web applications and services.</param>
+    /// <param name="logger">The logger.</param>
+    public static void ConfigureServices(this WebApplicationBuilder builder, IStartupLogger logger)
     {
         // Components
-        services.ConfigAppCore();
-        services.ConfigAppServices();
-        services.ConfigAppObjectStorage();
-        services.ConfigDalEf();
-        services.ConfigDalEfMssql(_configuration);
-        services.ConfigHost();
-        services.ConfigWebMvc();
+        builder.Services.AddDomainServicesConfig();
+        builder.Services.AddAppServicesConfig();
+        builder.Services.AddAppStoragesConfig();
+        builder.Services.AddEfCoreConfig();
+        builder.Services.AddEfCoreMssqlConfig(builder.Configuration, logger);
+        builder.Services.AddWebMvcConfig();
+
+        // Common
+        builder.Services.AddAutoMapperConfig();
+        builder.Services.AddHttpLoggingConfig(builder.Configuration, logger);
     }
 
     /// <summary>
     /// Configures the HTTP request pipeline.
     /// </summary>
-    /// <param name="app">The <see cref="IApplicationBuilder"/>.</param>
-    /// <param name="env">The <see cref="IWebHostEnvironment"/>.</param>
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    /// <param name="app">The web application used to configure the HTTP pipeline, and routes.</param>
+    public static void ConfigureHttpRequestPipeline(this WebApplication app)
     {
+        app.UseExceptionHandler(x => x.UseCustomExceptionHandler(app.Environment));
         app.UseStatusCodePages();
         app.UseStaticFiles();
         app.UseMvcWithDefaultRoute();
@@ -51,7 +47,14 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(x => x.MapControllers());
+    }
 
-        app.ApplyMssqlMigration(_configuration);
+    /// <summary>
+    /// Applies automatic migration.
+    /// </summary>
+    /// <param name="app">The web application used to configure the HTTP pipeline, and routes.</param>
+    public static void ApplyAutoMigration(this WebApplication app)
+    {
+        app.ApplyMssqlMigration(app.Configuration);
     }
 }
