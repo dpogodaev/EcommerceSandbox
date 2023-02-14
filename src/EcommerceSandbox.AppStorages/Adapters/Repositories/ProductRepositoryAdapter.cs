@@ -4,7 +4,7 @@ using AutoMapper;
 using EcommerceSandbox.AppStorages.Dtos;
 using EcommerceSandbox.DomainEntities.Entities;
 using DomainRepositories = EcommerceSandbox.DomainServices.Interfaces.Storages.Repositories;
-using IProductRepository = EcommerceSandbox.AppStorages.Interfaces.Repositories.IProductRepository;
+using PersistentRepositories = EcommerceSandbox.AppStorages.Interfaces.Repositories;
 
 namespace EcommerceSandbox.AppStorages.Adapters.Repositories;
 
@@ -14,16 +14,16 @@ namespace EcommerceSandbox.AppStorages.Adapters.Repositories;
 public class ProductRepositoryAdapter : DomainRepositories.IProductRepository
 {
     private readonly IMapper _mapper;
-    private readonly IProductRepository _repository;
+    private readonly PersistentRepositories.IProductRepository _repository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProductRepositoryAdapter"/> class.
     /// </summary>
     /// <param name="mapper">The object mapper.</param>
-    /// <param name="repository">The storage for <see cref="Product"/>s.</param>
+    /// <param name="repository">The repository for <see cref="Product"/>s.</param>
     public ProductRepositoryAdapter(
         IMapper mapper,
-        IProductRepository repository)
+        PersistentRepositories.IProductRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
@@ -38,11 +38,11 @@ public class ProductRepositoryAdapter : DomainRepositories.IProductRepository
             await _repository.GetByIdAsync(id));
     }
 
-    /// <inheritdoc cref="DomainRepositories.IProductRepository.GetAll"/>
-    public IEnumerable<Product> GetAll()
+    /// <inheritdoc cref="DomainRepositories.IProductRepository.GetAllAsync"/>
+    public async Task<IEnumerable<Product>> GetAllAsync()
     {
         return _mapper.Map<IEnumerable<Product>>(
-            _repository.GetAll());
+            await _repository.GetAllAsync());
     }
 
     /// <inheritdoc cref="DomainRepositories.IProductRepository.CreateAsync"/>
@@ -78,7 +78,8 @@ public class ProductRepositoryAdapter : DomainRepositories.IProductRepository
     #endregion
 
     /// <summary>
-    /// Mapping rules for <see cref="EcommerceSandbox.AppStorage.Dtos"/> and <see cref="EcommerceSandbox.DomainEntities.Entities"/>.
+    /// Mapping rules for <see cref="EcommerceSandbox.AppStorages.Dtos"/>
+    /// and <see cref="EcommerceSandbox.DomainEntities.Entities"/>.
     /// </summary>
     internal class Mapping : Profile
     {

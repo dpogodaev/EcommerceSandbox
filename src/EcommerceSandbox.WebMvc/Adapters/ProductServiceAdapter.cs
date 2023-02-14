@@ -41,15 +41,15 @@ public class ProductServiceAdapter : IProductService
             await _service.GetByIdAsync(id));
     }
 
-    /// <inheritdoc cref="IProductService.GetAll"/>
-    public IEnumerable<ProductDto> GetAll()
+    /// <inheritdoc cref="IProductService.GetAllAsync"/>
+    public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
         return _mapper.Map<IEnumerable<ProductDto>>(
-            _service.GetAll());
+            await _service.GetAllAsync());
     }
 
-    /// <inheritdoc cref="IProductService.AddProduct"/>
-    public async Task<ProductDto> AddProduct(ProductCreationModel modelToCreate)
+    /// <inheritdoc cref="IProductService.AddAsync"/>
+    public async Task<ProductDto> AddAsync(ProductCreationModel modelToCreate)
     {
         return _mapper.Map<ProductDto>(
             await _service.CreateAsync(

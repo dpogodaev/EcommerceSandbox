@@ -41,12 +41,12 @@ public static class Startup
         app.UseStaticFiles();
         app.UseMvcWithDefaultRoute();
 
-        app.UseHttpLogging();
-        app.UseHttpsRedirection();
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseEndpoints(x => x.MapControllers());
+        // app.UseHttpLogging();
+        // app.UseHttpsRedirection();
+        // app.UseRouting();
+        // app.UseAuthentication();
+        // app.UseAuthorization();
+        // app.UseEndpoints(x => x.MapControllers());
     }
 
     /// <summary>

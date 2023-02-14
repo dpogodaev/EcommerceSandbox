@@ -7,7 +7,7 @@ using EcommerceSandbox.WebMvc.Models.Product;
 namespace EcommerceSandbox.WebMvc.Interfaces;
 
 /// <summary>
-/// Application service for performing operations with <see cref="Product"/>s.
+/// Service for performing operations with <see cref="Product"/>s.
 /// </summary>
 public interface IProductService
 {
@@ -19,17 +19,17 @@ public interface IProductService
     Task<ProductDto> GetByIdAsync(long id);
 
     /// <summary>
-    /// Returns a list of <see cref="Product"/>s.
+    /// Returns a list of all <see cref="Product"/>s.
     /// </summary>
-    /// <returns><see cref="ProductDto"/>s of found products.</returns>
-    IEnumerable<ProductDto> GetAll();
+    /// <returns><see cref="ProductDto"/>s of all found entities.</returns>
+    Task<IEnumerable<ProductDto>> GetAllAsync();
 
     /// <summary>
     /// Adds a new <see cref="Product"/> entity.
     /// </summary>
     /// <param name="modelToCreate">The <see cref="ProductCreationModel"/> to create an entity.</param>
     /// <returns>The <see cref="ProductDto"/> of the created entity.</returns>
-    Task<ProductDto> AddProduct(ProductCreationModel modelToCreate);
+    Task<ProductDto> AddAsync(ProductCreationModel modelToCreate);
 
     /// <summary>
     /// Updates an existing <see cref="Product"/> entity.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EcommerceSandbox.AppServices.Dtos;
@@ -18,22 +19,22 @@ public class ProductAppService : IProductAppService
 {
     private readonly IMapper _mapper;
     private readonly ILogger<ProductAppService> _logger;
-    private readonly IProductRepository _storage;
+    private readonly IProductRepository _repository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProductAppService"/> class.
     /// </summary>
     /// <param name="mapper">The object mapper.</param>
     /// <param name="logger">The logger.</param>
-    /// <param name="storage">The storage for <see cref="Product"/>s.</param>
+    /// <param name="repository">The repository for <see cref="Product"/>s.</param>
     public ProductAppService(
         IMapper mapper,
         ILogger<ProductAppService> logger,
-        IProductRepository storage)
+        IProductRepository repository)
     {
         _mapper = mapper;
         _logger = logger;
-        _storage = storage;
+        _repository = repository;
     }
 
     #region IProductAppService
@@ -43,37 +44,41 @@ public class ProductAppService : IProductAppService
     {
         try
         {
-            var foundEntity = await _storage.GetByIdAsync(id);
+            var foundEntity = await _repository.GetByIdAsync(id);
             if (foundEntity == null)
             {
-                _logger.LogDebug(AppLogEvents.ReadNotFound, "{Title}: id={ProductId}",
-                    "The product was not found", id);
-
+                LogNotFound(id);
                 return null;
             }
 
             var foundDto = _mapper.Map<ProductDto>(foundEntity);
 
-            _logger.LogDebug(AppLogEvents.Read, "{Title}: id={ProductId}, {Details}",
-                "The product was found", id, $"dto={Serialize(foundDto)}");
-
+            LogGet(foundDto);
             return foundDto;
         }
         catch (Exception e)
         {
-            _logger.LogError(AppLogEvents.Read, e, "{Title}: id={ProductId}",
-                "Failed to found the product", id);
+            LogFailedGet(e, id);
             throw;
         }
     }
 
-    //TODO: to del, add filter
-    public IEnumerable<ProductDto> GetAll()
+    /// <inheritdoc cref="IProductAppService.GetAllAsync"/>
+    public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
-        var foundEntities = _storage.GetAll();
-        var foundDtos = _mapper.Map<IEnumerable<ProductDto>>(foundEntities);
+        try
+        {
+            var foundEntities = (await _repository.GetAllAsync()).ToList();
+            var foundDtos = _mapper.Map<IEnumerable<ProductDto>>(foundEntities);
 
-        return foundDtos;
+            LogGetAll(foundEntities.Count);
+            return foundDtos;
+        }
+        catch (Exception e)
+        {
+            LogFailedGetAll(e);
+            throw;
+        }
     }
 
     /// <inheritdoc cref="IProductAppService.CreateAsync"/>
@@ -82,18 +87,15 @@ public class ProductAppService : IProductAppService
         try
         {
             var entityToCrete = _mapper.Map<Product>(modelToCreate);
-            var createdEntity = await _storage.CreateAsync(entityToCrete);
+            var createdEntity = await _repository.CreateAsync(entityToCrete);
             var createdDto = _mapper.Map<ProductDto>(createdEntity);
 
-            _logger.LogDebug(AppLogEvents.Create, "{Title}: id={ProductId}, {Details}",
-                "The product was created", createdDto.Id, $"dto={Serialize(createdDto)}");
-
+            LogCreated(createdDto);
             return createdDto;
         }
         catch (Exception e)
         {
-            _logger.LogError(AppLogEvents.Create, e, "{Title}: {Details}",
-                "Failed to create a product", $"model={Serialize(modelToCreate)}");
+            LogFailedCreate(e, modelToCreate);
             throw;
         }
     }
@@ -103,29 +105,24 @@ public class ProductAppService : IProductAppService
     {
         try
         {
-            var entityToUpdate = await _storage.GetByIdAsync(modelToUpdate.Id);
+            var entityToUpdate = await _repository.GetByIdAsync(modelToUpdate.Id);
             if (entityToUpdate == null)
             {
-                _logger.LogDebug(AppLogEvents.UpdateNotFound, "{Title}: id={ProductId}, {Details}",
-                    "The product was not found", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
-
+                LogUpdateNotFound(modelToUpdate);
                 return null;
             }
 
             _mapper.Map(modelToUpdate, entityToUpdate);
 
-            var updatedEntity = await _storage.UpdateAsync(entityToUpdate);
+            var updatedEntity = await _repository.UpdateAsync(entityToUpdate);
             var updatedDto = _mapper.Map<ProductDto>(updatedEntity);
 
-            _logger.LogDebug(AppLogEvents.Update, "{Title}: id={ProductId}, {Details}",
-                "The product to update has been updated", modelToUpdate.Id, $"dto={Serialize(updatedDto)}");
-
+            LogUpdated(updatedDto);
             return updatedDto;
         }
         catch (Exception e)
         {
-            _logger.LogError(AppLogEvents.Update, e, "{Title}: id={ProductId}, {Details}",
-                "Failed to update the product", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
+            LogFailedUpdate(e, modelToUpdate);
             throw;
         }
     }
@@ -139,29 +136,24 @@ public class ProductAppService : IProductAppService
 
             foreach (var modelToUpdate in modelsToUpdate)
             {
-                var entityToUpdate = await _storage.GetByIdAsync(modelToUpdate.Id);
+                var entityToUpdate = await _repository.GetByIdAsync(modelToUpdate.Id);
                 if (entityToUpdate == null)
                 {
-                    _logger.LogDebug(AppLogEvents.UpdateNotFound, "{Title}: id={ProductId}, {Details}",
-                        "The product to update was not found", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
-
+                    LogUpdateNotFound(modelToUpdate);
                     continue;
                 }
 
-                _mapper.Map(modelToUpdate, entityToUpdate);
+                LogUpdated(modelToUpdate);
 
+                _mapper.Map(modelToUpdate, entityToUpdate);
                 entitiesToUpdate.Add(entityToUpdate);
             }
 
-            await _storage.BulkUpdateAsync(entitiesToUpdate);
-
-            entitiesToUpdate.ForEach(x =>
-                _logger.LogDebug(AppLogEvents.Update, "{Title}: id={ProductId}, {Details}",
-                    "The product has been updated", x.Id, $"dto={Serialize(x)}"));
+            await _repository.BulkUpdateAsync(entitiesToUpdate);
         }
         catch (Exception e)
         {
-            _logger.LogError(AppLogEvents.Update, e, "{Title}", "Failed to update products");
+            LogFailedUpdates(e);
             throw;
         }
     }
@@ -171,38 +163,126 @@ public class ProductAppService : IProductAppService
     {
         try
         {
-            var deletedEntity = await _storage.DeleteAsync(id);
+            var deletedEntity = await _repository.DeleteAsync(id);
             if (deletedEntity == null)
             {
-                _logger.LogDebug(AppLogEvents.DeleteNotFound, "{Title}: id={ProductId}",
-                    "The product to delete was not found", id);
-
+                LogDeleteNotFound(id);
                 return null;
             }
 
             var deletedDto = _mapper.Map<ProductDto>(deletedEntity);
 
-            _logger.LogDebug(AppLogEvents.Delete, "{Title}: id={ProductId}, {Details}",
-                "The product has been deleted", id, $"dto={Serialize(deletedDto)}");
-
+            LogDeleted(deletedDto);
             return deletedDto;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{Title}: id={ProductId}", "Failed to delete the product", id);
+            LogFailedDelete(e, id);
             throw;
         }
     }
 
     #endregion
 
+    #region Private methods
+
+    private void LogGet(ProductDto foundDto)
+    {
+        _logger.LogDebug(AppLogEvents.Read, "{Title}: id={ProductId}, {Details}",
+            "The product was found", foundDto.Id, $"dto={Serialize(foundDto)}");
+    }
+
+    private void LogGetAll(int count)
+    {
+        _logger.LogDebug(AppLogEvents.Read, "{Title}: count={ProductCount}",
+            "All products have been returned", count);
+    }
+
+    private void LogCreated(ProductDto createdDto)
+    {
+        _logger.LogDebug(AppLogEvents.Create, "{Title}: id={ProductId}, {Details}",
+            "The product was created", createdDto.Id, $"dto={Serialize(createdDto)}");
+    }
+
+    private void LogUpdated(ProductDto updatedDto)
+    {
+        _logger.LogDebug(AppLogEvents.Update, "{Title}: id={ProductId}, {Details}",
+            "The product has been updated", updatedDto.Id, $"dto={Serialize(updatedDto)}");
+    }
+
+    private void LogUpdated(ProductUpdateModel modelToUpdate)
+    {
+        _logger.LogDebug(AppLogEvents.Update, "{Title}: id={ProductId}, {Details}",
+            "The product has been updated", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
+    }
+
+    private void LogDeleted(ProductDto deletedDto)
+    {
+        _logger.LogDebug(AppLogEvents.Delete, "{Title}: id={ProductId}, {Details}",
+            "The product has been deleted", deletedDto.Id, $"dto={Serialize(deletedDto)}");
+    }
+
+    private void LogNotFound(long id)
+    {
+        _logger.LogDebug(AppLogEvents.ReadNotFound, "{Title}: id={ProductId}",
+            "The product was not found", id);
+    }
+
+    private void LogUpdateNotFound(ProductUpdateModel modelToUpdate)
+    {
+        _logger.LogDebug(AppLogEvents.UpdateNotFound, "{Title}: id={ProductId}, {Details}",
+            "The product to update was not found", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
+    }
+
+    private void LogDeleteNotFound(long id)
+    {
+        _logger.LogDebug(AppLogEvents.DeleteNotFound, "{Title}: id={ProductId}",
+            "The product to delete was not found", id);
+    }
+
+    private void LogFailedGet(Exception e, long id)
+    {
+        _logger.LogError(AppLogEvents.Read, e, "{Title}: id={ProductId}",
+            "Failed to found the product", id);
+    }
+
+    private void LogFailedGetAll(Exception e)
+    {
+        _logger.LogError(AppLogEvents.Read, e, "{Title}", "Failed to get all products");
+    }
+
+    private void LogFailedCreate(Exception e, ProductCreationModel modelToCreate)
+    {
+        _logger.LogError(AppLogEvents.Create, e, "{Title}: {Details}",
+            "Failed to create a product", $"model={Serialize(modelToCreate)}");
+    }
+
+    private void LogFailedUpdate(Exception e, ProductUpdateModel modelToUpdate)
+    {
+        _logger.LogError(AppLogEvents.Update, e, "{Title}: id={ProductId}, {Details}",
+            "Failed to update the product", modelToUpdate.Id, $"model={Serialize(modelToUpdate)}");
+    }
+
+    private void LogFailedUpdates(Exception e)
+    {
+        _logger.LogError(AppLogEvents.Update, e, "{Title}", "Failed to update products");
+    }
+
+    private void LogFailedDelete(Exception e, long id)
+    {
+        _logger.LogError(e, "{Title}: id={ProductId}", "Failed to delete the product", id);
+    }
+
     private static string Serialize<T>(T source) where T : class
     {
         return StringHelper.Serialize(source);
     }
 
+    #endregion
+
     /// <summary>
-    /// Mapping rules for <see cref="EcommerceSandbox.AppServices"/> and <see cref="EcommerceSandbox.DomainEntities.Entities"/>.
+    /// Mapping rules for <see cref="EcommerceSandbox.AppServices"/>
+    /// and <see cref="EcommerceSandbox.DomainEntities.Entities"/>.
     /// </summary>
     internal class Mapping : Profile
     {

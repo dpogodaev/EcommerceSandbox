@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using EcommerceSandbox.WebMvc.Dtos;
 using EcommerceSandbox.WebMvc.Interfaces;
 using EcommerceSandbox.WebMvc.Models.Product;
 using Microsoft.AspNetCore.Mvc;
@@ -8,75 +7,84 @@ using Microsoft.AspNetCore.Mvc;
 namespace EcommerceSandbox.WebMvc.Controllers;
 
 /// <summary>
-/// Controller for working with products.
+/// Used to perform CRUD-operations with products.
 /// </summary>
 public class ProductController : Controller
 {
-    private readonly IProductService _service;
+    private readonly IProductService _productService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProductController"/> class.
     /// </summary>
-    /// <param name="service">Used for performing operations with products.</param>
-    public ProductController(IProductService service)
+    /// <param name="productService">Used for performing operations with products.</param>
+    public ProductController(IProductService productService)
     {
-        _service = service;
+        _productService = productService;
     }
 
     /// <summary>
-    /// Returns a list of products.
+    /// Returns a list of all products.
     /// </summary>
-    /// <returns><see cref="ProductDto"/>s of found products.</returns>
+    /// <returns>A list of all found products.</returns>
     public async Task<IActionResult> Index()
     {
-        return View(_service.GetAll());
+        var allProducts = await _productService.GetAllAsync();
+
+        return View(allProducts);
     }
 
     /// <summary>
     /// Adds a new product.
     /// </summary>
-    /// <param name="model">The <see cref="ProductCreationModel"/> to create a product.</param>
-    /// <returns>The <see cref="ProductDto"/> of the created product.</returns>
+    /// <param name="product">The model to create a product.</param>
+    /// <returns>A list of all products.</returns>
     [HttpPost]
-    public async Task<IActionResult> AddProduct(ProductCreationModel model)
+    public async Task<IActionResult> AddProduct(ProductCreationModel product)
     {
-        await _service.AddProduct(model);
+        await _productService.AddAsync(product);
+
         return RedirectToAction(nameof(Index));
     }
 
     /// <summary>
     /// Updates an existing product.
     /// </summary>
-    /// <param name="model">The <see cref="ProductUpdateModel"/> to update the product.</param>
-    /// <returns>The <see cref="ProductDto"/> of the updated product.</returns>
+    /// <param name="product">The model to update the product.</param>
+    /// <returns>A list of all products.</returns>
     [HttpPost]
-    public async Task<IActionResult> UpdateProduct(ProductUpdateModel model)
+    public async Task<IActionResult> UpdateProduct(ProductUpdateModel product)
     {
-        await _service.UpdateAsync(model);
+        await _productService.UpdateAsync(product);
+
         return RedirectToAction(nameof(Index));
     }
 
     /// <summary>
     /// Updates existing products.
     /// </summary>
-    /// <param name="models"><see cref="ProductUpdateModel"/>s to update products.</param>
-    /// <returns>The <see cref="Task"/> that will be completed when all products are updated.</returns>
+    /// <param name="products">Models to update products.</param>
+    /// <returns>A list of all products.</returns>
     [HttpPost]
-    public async Task<IActionResult> UpdateAll(IEnumerable<ProductUpdateModel> models)
+    public async Task<IActionResult> UpdateProducts(IEnumerable<ProductUpdateModel> products)
     {
-        await _service.BulkUpdateAsync(models);
+        await _productService.BulkUpdateAsync(products);
+
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> UpdateProduct(long key)
+    public async Task<IActionResult> UpdateProduct(long id)
     {
-        return View(await _service.GetByIdAsync(key));
+        var foundProduct = await _productService.GetByIdAsync(id); 
+
+        return View(foundProduct);
     }
 
-    public async Task<IActionResult> UpdateAll()
+    public async Task<IActionResult> UpdateAllProducts()
     {
         ViewBag.UpdateAll = true;
 
-        return View(nameof(Index), _service.GetAll());
+        var allProducts = await _productService.GetAllAsync();
+
+        return View(nameof(Index), allProducts);
     }
 }

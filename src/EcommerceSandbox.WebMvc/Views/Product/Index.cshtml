@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<EcommerceSandbox.WebMvc.Dtos.ProductDto>
+@model IEnumerable<ProductDto>
 <h3 class="p-2 bg-primary text-white text-center">Products</h3>
 <div class="container-fluid mt-3">
     @if (ViewBag.UpdateAll != true)
@@ -60,11 +60,11 @@
             }
         </div>
         <div class="text-center">
-            <a asp-action="UpdateAll" class="btn btn-primary">Edit All</a>
+            <a asp-action="UpdateAllProducts" class="btn btn-primary">Edit All</a>
         </div>
     }
     else
     {
-        @Html.Partial("InlineEditor", Model)
+        @await Html.PartialAsync("InlineEditor", Model)
     }
 </div>

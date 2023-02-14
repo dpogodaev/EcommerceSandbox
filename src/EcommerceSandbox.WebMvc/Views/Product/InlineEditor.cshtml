@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EcommerceSandbox.WebMvc.Dtos.ProductDto>
+﻿@model IEnumerable<ProductDto>
 <div class="row">
     <div class="col-1 font-weight-bold">Id</div>
     <div class="col font-weight-bold">Name</div>
@@ -7,7 +7,7 @@
     <div class="col font-weight-bold">Retail Price</div>
 </div>
 @{ var i = 0; }
-<form asp-action="UpdateAll" method="post">
+<form asp-action="UpdateProducts" method="post">
     @foreach (var p in Model)
     {
         <div class="row p-2">

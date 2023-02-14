@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EcommerceSandbox.EfCore.Entities;
@@ -36,10 +37,10 @@ public class ProductRepository : IProductRepository
         return await _entityRepository.GetByIdAsync(id);
     }
 
-    //TODO: to del
-    public IEnumerable<Product> GetAll()
+    /// <inheritdoc cref="IProductRepository.GetAllAsync"/>
+    public Task<IEnumerable<Product>> GetAllAsync()
     {
-        return _entityRepository.GetAll();
+        return Task.FromResult<IEnumerable<Product>>(_entityRepository.GetAll());
     }
 
     /// <inheritdoc cref="IProductRepository.CreateAsync"/>
@@ -67,11 +68,14 @@ public class ProductRepository : IProductRepository
     /// <inheritdoc cref="IProductRepository.BulkUpdateAsync"/>
     public async Task BulkUpdateAsync(IEnumerable<Product> entitiesToUpdate)
     {
-        foreach (var entityToUpdate in entitiesToUpdate)
-        {
-            var existingEntity = await _entityRepository.GetByIdAsync(entityToUpdate.Id);
-            if (existingEntity == null) continue;
+        var entitiesToUpdateWithIds = entitiesToUpdate.ToDictionary(x => x.Id);
 
+        var existingEntities = _entityRepository.GetAll()
+            .Where(x => entitiesToUpdateWithIds.Keys.Contains(x.Id)).ToList();
+
+        foreach (var existingEntity in existingEntities)
+        {
+            var entityToUpdate = entitiesToUpdateWithIds[existingEntity.Id];
             _mapper.Map(entityToUpdate, existingEntity);
             await _entityRepository.UpdateAsync(existingEntity);
         }
@@ -106,7 +110,7 @@ public class ProductRepository : IProductRepository
     #endregion
 
     /// <summary>
-    /// Mapping rules for <see cref="EcommerceSandbox.EfCore.Entities"/> and <see cref="EcommerceSandbox.AppStorage.Dtos"/>.
+    /// Mapping rules for <see cref="EcommerceSandbox.EfCore.Entities"/>.
     /// </summary>
     internal class Mapping : Profile
     {

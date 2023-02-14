@@ -18,8 +18,11 @@ public interface IProductAppService
     /// <returns>The <see cref="ProductDto"/> if the entity was found; <c>null</c> otherwise.</returns>
     Task<ProductDto> GetByIdAsync(long id);
 
-    //TODO: to del
-    IEnumerable<ProductDto> GetAll();
+    /// <summary>
+    /// Returns a list of all <see cref="Product"/> entities.
+    /// </summary>
+    /// <returns><see cref="ProductDto"/>s of all found entities.</returns>
+    Task<IEnumerable<ProductDto>> GetAllAsync();
 
     /// <summary>
     /// Creates a new <see cref="Product"/> entity.
