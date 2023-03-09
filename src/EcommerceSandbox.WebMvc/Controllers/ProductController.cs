@@ -72,6 +72,18 @@ public class ProductController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    /// <summary>
+    /// Deletes an existing product.
+    /// </summary>
+    /// <param name="id">Product ID to delete.</param>
+    /// <returns>A list of all products.</returns>
+    [HttpPost]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await _productService.DeleteAsync(id);
+        return RedirectToAction(nameof(Index));
+    }
+
     public async Task<IActionResult> UpdateProduct(long id)
     {
         var foundProduct = await _productService.GetByIdAsync(id); 
